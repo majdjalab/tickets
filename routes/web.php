@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\AvatarController;
+use App\Http\Controllers\Profile\AvatarController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
