@@ -2,9 +2,20 @@
     <header>
 
         <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
-            User Aatar
+            User Avatar
         </h2>
-        <img src="{{"/storage/$user->avatar"}}" width="100" height="100" class="rounded-full"/>
+
+        <!-- when the user have alredy registerd using github then get the avatar from his github -->
+        @if (filter_var($user->avatar, FILTER_VALIDATE_URL))
+            <img src="{{ $user->avatar }}" width="100" height="100" class="rounded-full"/>
+        <!-- when the user dont have an avatar then get the avatar from the link -->
+        @elseif (!$user->avatar)
+            <img src="https://cdn-icons-png.flaticon.com/128/9131/9131590.png" width="100" height="100" class="rounded-full">
+        @else
+            <!-- when the user have already set his avatar then get the avatar from the storage -->
+            <img src="{{ asset('storage/' . $user->avatar) }}" width="100" height="100" class="rounded-full"/>
+        @endif
+
         <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
             Add or Update User Avatar
         </p>
