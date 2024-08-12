@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -51,6 +52,15 @@ class User extends Authenticatable
         return Attribute::make(
             set: fn($value) => bcrypt($value)
         );
+    }
+
+    protected function isAdmin():Attribute
+    {
+        $admins = ['majd.jalab@lead-alliance.net'];
+        return Attribute::make(
+            get: fn () => in_array($this->email, $admins)
+        );
+
     }
 
 }
