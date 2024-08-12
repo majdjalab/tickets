@@ -24,6 +24,11 @@
                 </div>
             </div>
 
+            <div class="flex flex-col items-center justify-center">
+                <x-nav-link  class="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200" href="{{ route('ticket.index') }}">
+                    Tickets
+                </x-nav-link >
+            </div>
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ms-6">
                 <x-dropdown align="right" width="48">

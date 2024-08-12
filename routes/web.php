@@ -60,7 +60,5 @@ $user = User::firstOrCreate(['email' => $user->email,
 Route::middleware('auth')->group(function () {
 
     Route::resource('/ticket', TicketController::class);
-    //Route::get('/ticket/create', [TicketController::class, 'create'])->name('ticket.create');
-    //Route::post('/ticket/create', [TicketController::class, 'store'])->name('ticket.store');
 });
 
