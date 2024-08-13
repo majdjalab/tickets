@@ -69,7 +69,7 @@ class TicketController extends Controller
             $ticket->user->notify(new TicketUpdatedNotification($ticket));
         }
         if ($request->file('attachment')) {
-            Storage::disk('public')->delete($ticket->attachment);
+            Storage::disk('public')->delete($ticket->attachment ?? '');
             $this->storeAttachment($request, $ticket);
 
         }

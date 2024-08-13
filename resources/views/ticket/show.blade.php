@@ -5,6 +5,7 @@
             <div class="text-white flex justify-between py-4">
                 <p>{{ $ticket->description }}</p>
                 <p>{{ $ticket->created_at->diffForHumans() }}</p>
+                <p>Created By {{ $ticket->user->name }}</p>
                 @if ($ticket->attachment)
                     <a href="{{ '/storage/' . $ticket->attachment }}" target="_blank">Attachment</a>
                 @endif
