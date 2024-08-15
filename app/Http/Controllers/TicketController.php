@@ -7,18 +7,44 @@ use App\Http\Requests\UpdateTicketRequest;
 use App\Models\Ticket;
 use App\Models\User;
 use App\Notifications\TicketUpdatedNotification;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class TicketController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
         $user = auth()->user();
-        $tickets = $user->isAdmin ? Ticket::latest()->get() : $user->tickets;
-        return view('ticket.index', compact('tickets'));
+
+        $sortOrder = $request->input('status', 'newest');
+
+        if ($user->isAdmin) {
+            if ($request->filled('user_id')) {
+                $ticketsQuery = Ticket::where('user_id', $request->input('user_id'));
+            } else {
+                $ticketsQuery = Ticket::query();
+            }
+        } else {
+            $ticketsQuery = Ticket::where('user_id', $user->id);
+        }
+
+        if ($sortOrder === 'oldest') {
+            $ticketsQuery->oldest();
+        } else {
+            $ticketsQuery->latest();
+        }
+
+        $tickets = $ticketsQuery->get();
+
+        $users = User::all();
+
+        return view('ticket.index', compact('tickets', 'users'));
     }
+
+
+
 
     /**
      * Show the form for creating a new resource.
@@ -56,11 +82,15 @@ class TicketController extends Controller
 
     public function edit(Ticket $ticket)
     {
-        return view('ticket.edit', compact('ticket'));
+        $users = User::all();
+        return view('ticket.edit', compact('ticket', 'users'));
     }
+
 
     public function update(UpdateTicketRequest $request, Ticket $ticket)
     {
+
+
 
         $ticket->update($request->except('attachment'));
 
@@ -82,8 +112,9 @@ class TicketController extends Controller
     public function destroy(Ticket $ticket)
     {
         $ticket->delete();
-        Storage::disk('public')->delete($ticket->attachment);
-        return redirect(route('ticket.index'));
+        if ($ticket->attachment && Storage::disk('public')->exists($ticket->attachment)) {
+            Storage::disk('public')->delete($ticket->attachment);
+        }        return redirect(route('ticket.index'));
     }
 
     protected function storeAttachment($request, $ticket)

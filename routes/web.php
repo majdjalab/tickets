@@ -60,5 +60,6 @@ $user = User::firstOrCreate(['email' => $user->email,
 Route::middleware('auth')->group(function () {
 
     Route::resource('/ticket', TicketController::class);
+
 });
 

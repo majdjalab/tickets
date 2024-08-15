@@ -13,6 +13,22 @@
                     <x-input-error :messages="$errors->get('title')" class="mt-2" />
                 </div>
 
+
+                @if (auth()->user()->isAdmin)
+                    <div class="mt-4">
+                        <x-input-label for="users" :value="__('Change to another user')" />
+                            <x-select-list name="user_id" id="users" selected="{{ $ticket->user->id }}">
+                                @foreach($users as $user)
+                                    <option value="{{ $user->id }}"  {{ $user->id == $ticket->user->id ? 'selected' : '' }}>
+                                        {{ $user->name }}
+                                    </option>
+                                @endforeach
+                            </x-select-list>
+                    </div>
+                @else
+                    <p class="text-white">Status: {{ $ticket->user->name }} </p>
+                @endif
+
                 <div class="mt-4">
                     <x-input-label for="description" :value="__('Description')" />
                     <x-textarea placeholder="Add description" name="description" id="description"
@@ -35,7 +51,10 @@
                         Update
                     </x-primary-button>
                 </div>
+
             </form>
         </div>
+
     </div>
+
 </x-app-layout>

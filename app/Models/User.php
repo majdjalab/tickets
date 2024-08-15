@@ -3,16 +3,17 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Casts\Attribute;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+
+use Illuminate\Support\Str;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use  HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -21,8 +22,8 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
-        'avatar',
         'email',
+        'avatar',
         'password',
     ];
 
@@ -37,32 +38,35 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the attributes that should be cast.
+     * The attributes that should be cast.
      *
-     * @return array<string, string>
+     * @var array<string, string>
      */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
-    protected function password(): Attribute
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+    ];
+
+    protected function name(): Attribute
     {
         return Attribute::make(
-            set: fn($value) => bcrypt($value)
+            get: fn ($value) => Str::upper($value)
         );
     }
 
-    protected function isAdmin():Attribute
+    // protected function password(): Attribute
+    // {
+    //     return Attribute::make(
+    //         set: fn ($value) => bcrypt($value)
+    //     );
+    // }
+    protected function isAdmin(): Attribute
     {
         $admins = ['majd.jalab@lead-alliance.net'];
         return Attribute::make(
             get: fn () => in_array($this->email, $admins)
         );
-
     }
+
     public function tickets(): HasMany
     {
         return $this->hasMany(Ticket::class);
