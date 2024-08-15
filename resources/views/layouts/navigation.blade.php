@@ -17,16 +17,16 @@
                     </x-nav-link>
                 </div>
 
-                <div class="flex flex-col items-center justify-center">
-                    <x-nav-link  class="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200" href="{{ route('ticket.create') }}">
-                        Support
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link  href="{{ route('ticket.create') }}" :active="request()->routeIs('ticket.create')">
+                        {{ __('Support') }}
                     </x-nav-link >
                 </div>
             </div>
 
-            <div class="flex flex-col items-center justify-center">
-                <x-nav-link  class="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200" href="{{ route('ticket.index') }}">
-                    Tickets
+            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                <x-nav-link href="{{ route('ticket.index') }}" :active="request()->routeIs('ticket.index')">
+                    {{ __('Tickets') }}
                 </x-nav-link >
             </div>
             <!-- Settings Dropdown -->
