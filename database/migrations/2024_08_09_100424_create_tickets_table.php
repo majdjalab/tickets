@@ -16,6 +16,7 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->text('description');
+            $table->date('due_date')->nullable();
             $table->string('status')->default(TicketStatus::OPEN);
             $table->string('attachment')->nullable();
             $table->foreignId('user_id')->constrained();

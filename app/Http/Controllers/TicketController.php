@@ -46,9 +46,6 @@ class TicketController extends Controller
 
 
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         return view('ticket.create');
@@ -76,6 +73,18 @@ class TicketController extends Controller
 
     public function show(Ticket $ticket)
     {
+
+        if (!$ticket) {
+            abort(404);
+        }
+
+        // Format today's date in 'YYYY/MM/DD'
+        $today = now()->format('Y/m/d');
+
+        return view('ticket.show', [
+            'ticket' => $ticket,
+            'today' => $today // Pass today's date to the view
+        ]);
         return view('ticket.show', compact('ticket'));
     }
 
@@ -89,24 +98,22 @@ class TicketController extends Controller
 
     public function update(UpdateTicketRequest $request, Ticket $ticket)
     {
-
-
+        $ticket->update($request->only('due_date'));
 
         $ticket->update($request->except('attachment'));
 
         if ($request->has('status')) {
-            //$user = User::find($ticket->user_id);
             $ticket->user->notify(new TicketUpdatedNotification($ticket));
         }
+
         if ($request->file('attachment')) {
             Storage::disk('public')->delete($ticket->attachment ?? '');
             $this->storeAttachment($request, $ticket);
-
         }
 
         return redirect()->route('ticket.index');
-
     }
+
 
 
     public function destroy(Ticket $ticket)

@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Profile\AvatarController;
 use App\Http\Controllers\TicketController;
+use App\Http\Controllers\FilterController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use Laravel\Socialite\Facades\Socialite;
@@ -38,6 +39,7 @@ require __DIR__.'/auth.php';
 */
 
 
+
 Route::get('/auth/redirect', function () {
     return Socialite::driver('github')->redirect();
 })->name('login.github');
@@ -56,10 +58,11 @@ $user = User::firstOrCreate(['email' => $user->email,
 
     return redirect('/dashboard');
 });
-
+Route::post('/ticket/{ticketId}/due-date', [FilterController::class, 'store']);
 Route::middleware('auth')->group(function () {
 
     Route::resource('/ticket', TicketController::class);
+
 
 });
 

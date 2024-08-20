@@ -15,12 +15,19 @@
                                     </option>
                                 @endforeach
                             </x-select-list>
-
                             <x-select-list name="status" id="status_select" class="w-full">
+
                                 <option value="newest" {{ request('status') == 'newest' ? 'selected' : '' }}>Newest</option>
                                 <option value="oldest" {{ request('status') == 'oldest' ? 'selected' : '' }}>Oldest</option>
                             </x-select-list>
                         </div>
+
+                        <x-select-list name="status" id="status_select" class="w-full">
+                            <option value="newest" {{ request('status') == 'newest' ? 'selected' : '' }}>Today</option>
+                            <option value="oldest" {{ request('status') == 'oldest' ? 'selected' : '' }}>Expired</option>
+                            <option value="oldest" {{ request('status') == 'oldest' ? 'selected' : '' }}>On Process</option>
+
+                        </x-select-list>
 
                         <div class="mt-4">
                             <button type="submit" class="bg-white rounded-lg p-2">Filter</button>
@@ -32,8 +39,9 @@
             </div>
 
             <div class="flex flex-col items-center">
-                <div class="flex justify-between w-full mb-4">
+                <div class="flex justify-between w-full mb-4" >
                     <h1 class="text-white text-lg font-bold">Support Tickets</h1>
+
                     <div>
                         <a href="{{ route('ticket.create') }}" class="bg-white rounded-lg p-2">Create New</a>
                     </div>
@@ -43,6 +51,7 @@
                     @forelse ($tickets as $ticket)
                         <div class="text-white flex justify-between py-2">
                             <a href="{{ route('ticket.show', $ticket->id) }}">{{ $ticket->title }}</a>
+                            <p>Due Date {{ $ticket->due_date }}</p>
                             <p>{{ $ticket->created_at->diffForHumans() }}</p>
                         </div>
                     @empty
