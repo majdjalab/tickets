@@ -16,31 +16,10 @@ class TicketController extends Controller
 
     public function index(Request $request)
     {
-        $user = auth()->user();
-
-        $sortOrder = $request->input('status', 'newest');
-
-        if ($user->isAdmin) {
-            if ($request->filled('user_id')) {
-                $ticketsQuery = Ticket::where('user_id', $request->input('user_id'));
-            } else {
-                $ticketsQuery = Ticket::query();
-            }
-        } else {
-            $ticketsQuery = Ticket::where('user_id', $user->id);
-        }
-
-        if ($sortOrder === 'oldest') {
-            $ticketsQuery->oldest();
-        } else {
-            $ticketsQuery->latest();
-        }
-
-        $tickets = $ticketsQuery->get();
-
-        $users = User::all();
-
-        return view('ticket.index', compact('tickets', 'users'));
+        return view('ticket.index', [
+            'tickets' => Ticket::all(),
+            'users' => User::all()
+        ]);
     }
 
 
@@ -74,17 +53,7 @@ class TicketController extends Controller
     public function show(Ticket $ticket)
     {
 
-        if (!$ticket) {
-            abort(404);
-        }
 
-        // Format today's date in 'YYYY/MM/DD'
-        $today = now()->format('Y/m/d');
-
-        return view('ticket.show', [
-            'ticket' => $ticket,
-            'today' => $today // Pass today's date to the view
-        ]);
         return view('ticket.show', compact('ticket'));
     }
 

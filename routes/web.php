@@ -7,7 +7,6 @@ use App\Http\Controllers\FilterController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use Laravel\Socialite\Facades\Socialite;
-use OpenAI\Laravel\Facades\OpenAI;
 
 Route::get('/', function () {
     return view('welcome');
@@ -26,19 +25,12 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__.'/auth.php';
 
-/*Route::get('/openai', function (){
-    $result = OpenAI::chat()->create([
-       'model' => 'gpt-3.5-turbo',
-       'messages' => [
-            ['role' => 'user', 'content' => 'Hello!'],
-        ],
-    ]);
+Route::get('/tickets/filter', [FilterController::class, 'index'])->name('ticket.filter');
 
-    echo $result->choices[0]->message->content;
+Route::post('/ticket/{ticketId}/due-date', [FilterController::class, 'store']);
+Route::middleware('auth')->group(function () {
+    Route::resource('/ticket', TicketController::class);
 });
-*/
-
-
 
 Route::get('/auth/redirect', function () {
     return Socialite::driver('github')->redirect();
@@ -47,8 +39,7 @@ Route::get('/auth/redirect', function () {
 Route::get('/auth/callback', function () {
     $user = Socialite::driver('github')->user();
 
-$user = User::firstOrCreate(['email' => $user->email,
-    ], [
+    $user = User::firstOrCreate(['email' => $user->email], [
         'name' => $user->name,
         'avatar' => $user->avatar,
         'password' => 'password',
@@ -58,11 +49,3 @@ $user = User::firstOrCreate(['email' => $user->email,
 
     return redirect('/dashboard');
 });
-Route::post('/ticket/{ticketId}/due-date', [FilterController::class, 'store']);
-Route::middleware('auth')->group(function () {
-
-    Route::resource('/ticket', TicketController::class);
-
-
-});
-
