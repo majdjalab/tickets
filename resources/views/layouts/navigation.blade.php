@@ -28,6 +28,12 @@
                         {{ __('Tickets') }}
                     </x-nav-link >
                 </div>
+
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link href="{{ route('categories.index') }}" :active="request()->routeIs('category.index')">
+                        {{ __('Categories') }}
+                    </x-nav-link >
+                </div>
             </div>
 
             <!-- Settings Dropdown -->

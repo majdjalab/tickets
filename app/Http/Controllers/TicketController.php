@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreTicketRequest;
 use App\Http\Requests\UpdateTicketRequest;
+use App\Models\Category;
 use App\Models\Ticket;
 use App\Models\User;
 use App\Notifications\TicketUpdatedNotification;
@@ -16,8 +17,17 @@ class TicketController extends Controller
 
     public function index(Request $request)
     {
+        $user = $request->user();
+        $ticketsQuery = Ticket::query();
+
+        if ($user->isAdmin ) {
+            $tickets = Ticket::all();
+        } elseif (!$user->isAdmin) {
+            $tickets = Ticket::where('user_id', $user->id)->get();
+        }
+
         return view('ticket.index', [
-            'tickets' => Ticket::all(),
+            'tickets' => $tickets,
             'users' => User::all()
         ]);
     }
@@ -27,27 +37,27 @@ class TicketController extends Controller
 
     public function create()
     {
-        return view('ticket.create');
+        $categories = Category::all();
+        return view('ticket.create', compact('categories'));
     }
 
 
     public function store(StoreTicketRequest $request)
     {
-
-
         $ticket = Ticket::create([
             'title' => $request->title,
-            'description'=>$request->description,
-            'user_id'=>auth()->id()
+            'description' => $request->description,
+            'user_id' => auth()->id(),
+            'category_id' => $request->category_id, // Save the selected category
         ]);
-
 
         if ($request->file('attachment')) {
             $this->storeAttachment($request, $ticket);
-            }
+        }
 
         return response()->redirectTo(route('ticket.index'));
     }
+
 
 
     public function show(Ticket $ticket)

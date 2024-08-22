@@ -47,21 +47,24 @@
 
                 <div class="w-full px-4 py-3 bg-white dark:bg-gray-800 shadow-md overflow-hidden rounded-lg">
                     @forelse ($tickets as $ticket)
-                        <div class="text-white flex justify-between py-2">
-                            <a href="{{ route('ticket.show', $ticket->id) }}">{{ $ticket->title }}</a>
-                            @if($ticket->due_date == now()->format('Y/m/d'))
-                                <p class="text-yellow-600"> Due Date: Today</p>
-                            @elseif($ticket->due_date < now()->format('Y/m/d'))
-                                <p class="text-red-600">Due Date {{ $ticket->due_date }}</p>
-                            @else
-                                <p class="text-green-600">Due Date {{ $ticket->due_date }}</p>
-                            @endif
-                            <p>{{ $ticket->created_at->diffForHumans() }}</p>
+                        <div class="text-white flex items-center justify-between py-2">
+                            <a href="{{ route('ticket.show', $ticket->id) }}" class="flex-1 text-center">{{ $ticket->title }}</a>
+                            <div class="flex-1 text-center">
+                                @if($ticket->due_date == now()->format('Y/m/d'))
+                                    <p class="text-yellow-600"> Due Date: Today</p>
+                                @elseif($ticket->due_date < now()->format('Y/m/d'))
+                                    <p class="text-red-600">Due Date {{ $ticket->due_date }}</p>
+                                @else
+                                    <p class="text-green-600">Due Date {{ $ticket->due_date }}</p>
+                                @endif
+                            </div>
+                            <p class="flex-1 text-center">{{ $ticket->created_at->diffForHumans() }}</p>
                         </div>
                     @empty
-                        <p class="text-white">You don't have any support tickets yet.</p>
+                        <p class="text-white text-center">You don't have any support tickets yet.</p>
                     @endforelse
                 </div>
+
             </div>
         </div>
     </div>

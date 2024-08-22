@@ -58,7 +58,6 @@
 import { defineProps, ref, computed } from 'vue';
 import axios from 'axios';
 
-// Define props
 const props = defineProps<{
     ticketId: number;
 }>();
@@ -66,7 +65,6 @@ const props = defineProps<{
 const ticketId = ref(props.ticketId);
 const selectedDate = ref<Date | null>(null);
 
-// Date formatting logic for display
 const today = new Date();
 const currentDate = today.toDateString();
 const yesterday = new Date(today.getTime() - 24 * 60 * 60 * 1000).toDateString();
@@ -96,7 +94,6 @@ const onDateSelect = (day: { date: Date }) => {
     console.log('Date selected:', selectedDate.value);
 };
 
-// Format date to 'YYYY/MM/DD' for backend
 const formatDateForBackend = (date: Date): string => {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based

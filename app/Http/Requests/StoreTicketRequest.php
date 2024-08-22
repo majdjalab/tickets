@@ -24,6 +24,7 @@ class StoreTicketRequest extends FormRequest
         return [
             'title' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string'],
+            'category_id' => ['string', 'exists:categories,id'],
             'attachment' => ['sometimes', 'file', 'mimes:jpg,jpeg,png,pdf'],
         ];
     }

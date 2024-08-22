@@ -23,7 +23,7 @@ class FilterController extends Controller
             $ticketsQuery->where('user_id', $user->id);
         }
 
-        // Sorting
+
         if ($sortOrder === 'oldest') {
             $ticketsQuery->oldest();
         } else {
