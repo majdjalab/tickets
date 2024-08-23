@@ -15,16 +15,13 @@
                 <x-input-error :messages="$errors->get('description')" class="mt-2" />
             </div>
 
-            <div class="mt-4">
-                <x-input-label for="category_id" :value="__('Category')" />
-                <x-select-list name="category_id" id="category_id">
-                    <option value="">Select a category</option>
-                    @foreach($categories as $category)
-                        <option value="{{ $category->id }}">{{ $category->name }}</option>
-                    @endforeach
-                </x-select-list>
-                <x-input-error class="mt-2" :messages="$errors->get('category_id')" />
-            </div>
+            <x-select-list id="category_id" name="category_id" class="block mt-1 w-full">
+                <option value="">Select a category</option>
+                @foreach($categories as $category)
+                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                @endforeach
+            </x-select-list>
+
 
             <div class="mt-4">
                 <x-input-label for="attachment" :value="__('Attachment (if any)')" />

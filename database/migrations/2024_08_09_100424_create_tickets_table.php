@@ -16,7 +16,8 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->text('description');
-            $table->unsignedBigInteger('category_id')->nullable();
+            $table->foreignId('category_id')->nullable();
+            $table->unsignedBigInteger('category_id');
             $table->date('due_date')->nullable();
             $table->string('status')->default(TicketStatus::OPEN);
             $table->string('attachment')->nullable();

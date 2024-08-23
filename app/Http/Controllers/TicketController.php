@@ -14,26 +14,23 @@ use Illuminate\Support\Str;
 
 class TicketController extends Controller
 {
-
     public function index(Request $request)
     {
         $user = $request->user();
         $ticketsQuery = Ticket::query();
 
-        if ($user->isAdmin ) {
+        if ($user->isAdmin) {
             $tickets = Ticket::all();
-        } elseif (!$user->isAdmin) {
+        } else {
             $tickets = Ticket::where('user_id', $user->id)->get();
         }
 
         return view('ticket.index', [
             'tickets' => $tickets,
-            'users' => User::all()
+            'users' => User::all(),
+            'categories' => Category::all(),
         ]);
     }
-
-
-
 
     public function create()
     {
@@ -41,39 +38,41 @@ class TicketController extends Controller
         return view('ticket.create', compact('categories'));
     }
 
-
     public function store(StoreTicketRequest $request)
     {
+        \Log::info('Request Data:', $request->all());
+
         $ticket = Ticket::create([
             'title' => $request->title,
             'description' => $request->description,
             'user_id' => auth()->id(),
-            'category_id' => $request->category_id, // Save the selected category
+            'category_id' => $request->input('category_id'),
         ]);
 
         if ($request->file('attachment')) {
             $this->storeAttachment($request, $ticket);
         }
 
-        return response()->redirectTo(route('ticket.index'));
+        return redirect()->route('ticket.index');
     }
-
-
 
     public function show(Ticket $ticket)
     {
+        $ticket->load('category');
 
-
-        return view('ticket.show', compact('ticket'));
+        return view('ticket.show', [
+            'ticket' => $ticket,
+            'categories' => Category::all(),
+            'categoryName' => $ticket->category ? $ticket->category->name : 'No Category',
+        ]);
     }
-
 
     public function edit(Ticket $ticket)
     {
         $users = User::all();
-        return view('ticket.edit', compact('ticket', 'users'));
+        $categories = Category::all();
+        return view('ticket.edit', compact('ticket', 'users', 'categories'));
     }
-
 
     public function update(UpdateTicketRequest $request, Ticket $ticket)
     {
@@ -93,23 +92,22 @@ class TicketController extends Controller
         return redirect()->route('ticket.index');
     }
 
-
-
     public function destroy(Ticket $ticket)
     {
-        $ticket->delete();
         if ($ticket->attachment && Storage::disk('public')->exists($ticket->attachment)) {
             Storage::disk('public')->delete($ticket->attachment);
-        }        return redirect(route('ticket.index'));
+        }
+
+        $ticket->delete();
+        return redirect()->route('ticket.index');
     }
 
-    protected function storeAttachment($request, $ticket)
+    protected function storeAttachment(Request $request, Ticket $ticket)
     {
-        $ext      = $request->file('attachment')->extension();
-        $contents = file_get_contents($request->file('attachment'));
+        $extension = $request->file('attachment')->extension();
         $filename = Str::random(25);
-        $path     = "attachments/$filename.$ext";
-        Storage::disk('public')->put($path, $contents);
+        $path = "attachments/{$filename}.{$extension}";
+        Storage::disk('public')->put($path, file_get_contents($request->file('attachment')));
         $ticket->update(['attachment' => $path]);
     }
 }

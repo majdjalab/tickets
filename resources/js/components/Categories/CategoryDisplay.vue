@@ -18,10 +18,6 @@
                         <img src="https://cdn-icons-png.flaticon.com/128/9790/9790368.png"
                              class="h-6"/>
                     </button>
-                    <button @click="editCategory(category.id)" class="edit-button">
-                        <img src="https://cdn-icons-png.flaticon.com/128/10336/10336582.png"
-                             class="h-6"/>
-                    </button>
                 </td>
             </tr>
             </tbody>

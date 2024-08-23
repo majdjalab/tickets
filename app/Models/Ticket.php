@@ -11,14 +11,15 @@ class Ticket extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'description', 'attachment', 'user_id', 'status'];
+    protected $fillable = ['title', 'description', 'attachment', 'user_id', 'category_id', 'status'];
 
-    public function user(): BelongsTo{
+    public function user(): BelongsTo
+    {
         return $this->belongsTo(User::class);
     }
 
-    public function category(): HasMany
+    public function category(): BelongsTo
     {
-        return $this->hasMany(Ticket::class);
+        return $this->belongsTo(Category::class);
     }
 }
