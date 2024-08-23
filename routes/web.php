@@ -48,6 +48,11 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::patch('/profile/avatar', [AvatarController::class, 'update'])->name('profile.avatar');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::patch('/profile/status', [ProfileController::class, 'updateStatus'])->name('profile.status.update');
+    Route::patch('/profile/status', [ProfileController::class, 'updateStatus'])->name('profile.status.update');
+    Route::get('/profile/status', [ProfileController::class, 'getStatus'])->name('profile.status.get');
+
+
 
     // Ticket Routes
     Route::resource('/ticket', TicketController::class);

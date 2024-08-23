@@ -27,7 +27,8 @@ class TicketUpdatedNotification extends Notification
      */
     public function via(object $notifiable): array
     {
-        return ['mail'];
+        return $notifiable->is_active ? ['mail'] : [];
+
     }
 
     /**

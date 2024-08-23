@@ -76,18 +76,14 @@ class TicketController extends Controller
 
     public function update(UpdateTicketRequest $request, Ticket $ticket)
     {
-        $ticket->update($request->only('due_date'));
-
-        $ticket->update($request->except('attachment'));
-
-        if ($request->has('status')) {
-            $ticket->user->notify(new TicketUpdatedNotification($ticket));
-        }
+        $ticket->update($request->only('due_date', 'status'));
 
         if ($request->file('attachment')) {
             Storage::disk('public')->delete($ticket->attachment ?? '');
             $this->storeAttachment($request, $ticket);
         }
+
+        $ticket->user->notify(new TicketUpdatedNotification($ticket));
 
         return redirect()->route('ticket.index');
     }

@@ -36,6 +36,24 @@ class ProfileController extends Controller
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
+    public function updateStatus(Request $request): RedirectResponse
+    {
+        $user = $request->user();
+
+        $request->validate([
+            'isActive' => 'required|boolean',
+        ]);
+
+        $user->is_active = $request->input('isActive');
+        $user->save();
+
+        return redirect()->route('profile')->with('status', 'Status updated successfully.');
+    }
+
+    public function getStatus(Request $request)
+    {
+        return response(['is_active' => $request->user()->is_active]);
+    }
 
     /**
      * Delete the user's account.
