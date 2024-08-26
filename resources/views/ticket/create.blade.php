@@ -5,9 +5,10 @@
 
             <div class="w-full">
                 <x-input-label for="title" :value="__('Title')" />
-                <x-text-input class="block mt-1 w-full" placeholder="Title" name="title" autofocus />
+                <x-text-input class="block mt-1 w-full" name="title" value="{{ old('title') }}" placeholder="Title" autofocus />
                 <x-input-error class="mt-2" :messages="$errors->get('title')" />
             </div>
+
 
             <div class="mt-4">
                 <x-input-label for="description" :value="__('Description')" />
@@ -15,13 +16,13 @@
                 <x-input-error :messages="$errors->get('description')" class="mt-2" />
             </div>
 
-            <x-select-list id="category_id" name="category_id" class="block mt-1 w-full">
-                <option value="">Select a category</option>
-                @foreach($categories as $category)
-                    <option value="{{ $category->id }}">{{ $category->name }}</option>
-                @endforeach
-            </x-select-list>
-
+            <div class="mt-4">
+                <x-input-label for="categories" :value="__('Categories')" />
+                <div id="app">
+                    <category-list :categories="{{ $categories }}" :selected='@json(old("categories", []))'></category-list>
+                </div>
+                <x-input-error :messages="$errors->get('categories')" class="mt-2" />
+            </div>
 
             <div class="mt-4">
                 <x-input-label for="attachment" :value="__('Attachment (if any)')" />
@@ -31,7 +32,7 @@
 
             <div class="flex items-center justify-end mt-4">
                 <x-primary-button class="ms-3">
-                    Create
+                    {{ __('Create') }}
                 </x-primary-button>
             </div>
         </form>

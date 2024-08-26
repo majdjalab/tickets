@@ -40,14 +40,19 @@ class TicketController extends Controller
 
     public function store(StoreTicketRequest $request)
     {
-        \Log::info('Request Data:', $request->all());
+        // Debug to see what is being sent
+        \Debugbar::info($request->all());
 
         $ticket = Ticket::create([
             'title' => $request->title,
             'description' => $request->description,
             'user_id' => auth()->id(),
-            'category_id' => $request->input('category_id'),
         ]);
+
+        if ($request->filled('categories')) {
+            $categoryIds = explode(',', $request->input('categories'));
+            $ticket->categories()->sync($categoryIds);
+        }
 
         if ($request->file('attachment')) {
             $this->storeAttachment($request, $ticket);
@@ -56,16 +61,23 @@ class TicketController extends Controller
         return redirect()->route('ticket.index');
     }
 
+
+
+
+
     public function show(Ticket $ticket)
     {
-        $ticket->load('category');
+        $ticket->load('categories');
+
+        $categoryNames = $ticket->categories->pluck('name')->toArray();
 
         return view('ticket.show', [
             'ticket' => $ticket,
             'categories' => Category::all(),
-            'categoryName' => $ticket->category ? $ticket->category->name : 'No Category',
+            'categoryNames' => $categoryNames,
         ]);
     }
+
 
     public function edit(Ticket $ticket)
     {

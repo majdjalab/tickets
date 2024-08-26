@@ -13,7 +13,7 @@ class Category extends Model
         'name',
         'description',
     ];
-    public function ticket(): BelongsTo{
-        return $this->belongsTo(Ticket::class);
+    public function ticket() {
+        return $this->belongsToMany(Ticket::class);
     }
 }

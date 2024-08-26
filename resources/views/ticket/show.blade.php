@@ -9,7 +9,15 @@
 
                 <div>
                     <p>Created By: {{ $ticket->user->name }}</p>
-                    <p>Category: {{ $categoryName }}</p>
+                    <p>Categories:
+                        @if (count($categoryNames) > 0)
+                            @foreach ($categoryNames as $categoryName)
+                                {{ $categoryName }}@if (!$loop->last), @endif
+                            @endforeach
+                        @else
+                            No Category
+                        @endif
+                    </p>
                     <p>Due Date: {{ $ticket->due_date }}</p>
                 </div>
 

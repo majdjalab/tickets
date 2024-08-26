@@ -30,7 +30,9 @@ class FilterController extends Controller
 
         // Filter by category
         if ($categoryId) {
-            $ticketsQuery->where('category_id', $categoryId);
+            $ticketsQuery->whereHas('categories', function($query) use ($categoryId) {
+                $query->where('categories.id', $categoryId);
+            });
         }
 
         // Sort order

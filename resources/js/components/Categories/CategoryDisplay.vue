@@ -10,14 +10,40 @@
             </tr>
             </thead>
             <tbody>
-            <tr v-for="category in categories" :key="category.id"  >
-                <td class="border border-slate-300 px-4 py-2">{{ category.name }}</td>
-                <td class="border border-slate-300 px-4 py-2">{{ category.description }}</td>
+            <tr v-for="category in categories" :key="category.id">
+                <td class="border border-slate-300 px-4 py-2">
+                    <template v-if="editingCategory && editingCategory.id === category.id">
+                        <input v-model="editedCategory.name" class="edit-input"/>
+                    </template>
+                    <template v-else>
+                        {{ category.name }}
+                    </template>
+                </td>
+                <td class="border border-slate-300 px-4 py-2">
+                    <template v-if="editingCategory && editingCategory.id === category.id">
+                        <input v-model="editedCategory.description" class="edit-input"/>
+                    </template>
+                    <template v-else>
+                        {{ category.description }}
+                    </template>
+                </td>
                 <td class="border border-slate-300 px-4 py-2 flex justify-around">
                     <button @click="deleteCategory(category.id)" class="delete-button">
-                        <img src="https://cdn-icons-png.flaticon.com/128/9790/9790368.png"
-                             class="h-6"/>
+                        <img src="https://cdn-icons-png.flaticon.com/128/9790/9790368.png" class="h-6"/>
                     </button>
+                    <template v-if="editingCategory && editingCategory.id === category.id">
+                        <button @click="updateCategory(category.id)" class="save-button">
+                            <img src="https://cdn-icons-png.flaticon.com/128/2716/2716054.png" class="h-6"/>
+                        </button>
+                        <button @click="cancelEdit" class="cancel-button">
+                            <img src="https://cdn-icons-png.flaticon.com/128/1828/1828665.png" class="h-6"/>
+                        </button>
+                    </template>
+                    <template v-else>
+                        <button @click="editCategory(category)" class="edit-button">
+                            <img src="https://cdn-icons-png.flaticon.com/128/10336/10336582.png" class="h-6"/>
+                        </button>
+                    </template>
                 </td>
             </tr>
             </tbody>
@@ -26,12 +52,23 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
     props: {
         categories: {
             type: Array,
             required: true,
         },
+    },
+    data() {
+        return {
+            editingCategory: null,
+            editedCategory: {
+                name: '',
+                description: '',
+            },
+        };
     },
     methods: {
         deleteCategory(id) {
@@ -42,12 +79,29 @@ export default {
                 .catch(error => {
                     console.error('Error deleting category:', error);
                 });
-            location.reload();
         },
 
-        editCategory(id) {
-            console.log('Edit category:', id);
-        }
+        editCategory(category) {
+            this.editingCategory = {...category};
+            this.editedCategory = {...category};
+        },
+
+        cancelEdit() {
+            this.editingCategory = null;
+            this.editedCategory = {name: '', description: ''};
+        },
+
+        updateCategory(id) {
+            axios.put(`/categories/${id}`, this.editedCategory)
+                .then(response => {
+                    this.$emit('category-updated', response.data);
+                    this.editingCategory = null;
+                    this.editedCategory = {name: '', description: ''};
+                })
+                .catch(error => {
+                    console.error('Error updating category:', error);
+                });
+        },
     }
 };
 </script>
@@ -58,13 +112,29 @@ export default {
     width: fit-content;
 }
 
-.delete-button, .edit-button {
+.delete-button, .edit-button, .save-button, .cancel-button {
     background-color: transparent;
     border: none;
     cursor: pointer;
     color: white;
     padding: 4px;
     margin: 0 4px;
+}
+
+.edit-input {
+    background-color: #2D3748;
+    color: white;
+    border: 1px solid #4A5568;
+    padding: 4px;
+    border-radius: 4px;
+}
+
+.save-button:hover img {
+    filter: brightness(0.8) sepia(1) hue-rotate(120deg);
+}
+
+.cancel-button:hover img {
+    filter: brightness(0.8) sepia(1) hue-rotate(60deg);
 }
 
 .delete-button:hover img {
