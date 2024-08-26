@@ -41,7 +41,7 @@ class TicketController extends Controller
     public function store(StoreTicketRequest $request)
     {
         // Debug to see what is being sent
-        \Debugbar::info($request->all());
+        \Log::info($request->all());
 
         $ticket = Ticket::create([
             'title' => $request->title,
@@ -81,6 +81,7 @@ class TicketController extends Controller
 
     public function edit(Ticket $ticket)
     {
+
         $users = User::all();
         $categories = Category::all();
         return view('ticket.edit', compact('ticket', 'users', 'categories'));
@@ -88,6 +89,15 @@ class TicketController extends Controller
 
     public function update(UpdateTicketRequest $request, Ticket $ticket)
     {
+
+        $ticket = Ticket::find($ticket->id);
+        $ticket->title= $request->get('title');
+        $ticket->description = $request->get('description');
+        if ($request->filled('categories')) {
+            $categoryIds = explode(',', $request->input('categories'));
+            $ticket->categories()->sync($categoryIds);
+        }
+        $ticket->save();
         $ticket->update($request->only('due_date', 'status'));
 
         if ($request->file('attachment')) {

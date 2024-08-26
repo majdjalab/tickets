@@ -54,7 +54,7 @@
 
                 <div class="w-full px-4 py-3 bg-white dark:bg-gray-800 shadow-md overflow-hidden rounded-lg">
                     @forelse ($tickets as $ticket)
-                        <div class="text-white flex items-center justify-between py-2">
+                        <div class="text-white flex items-center justify-between py-2" >
                             <a href="{{ route('ticket.show', $ticket->id) }}" class="flex-1 text-center">{{ $ticket->title }}</a>
 
                             <div class="flex-1 text-center">

@@ -1,4 +1,5 @@
 import './bootstrap';
+import '../css/app.css';
 import { createApp } from 'vue';
 import VueCalender from "./components/VueCalender.vue";
 import CategoryForm from "./components/Categories/CategoryForm.vue"
