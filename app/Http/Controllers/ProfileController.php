@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\Ticket;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -65,6 +66,7 @@ class ProfileController extends Controller
         ]);
 
         $user = $request->user();
+        Ticket::where('user_id', $user->id)->update(['user_id' => 1]);
 
         Auth::logout();
 

@@ -17,17 +17,16 @@
                 @if (auth()->user()->isAdmin)
                     <div class="mt-4">
                         <x-input-label for="users" :value="__('Change to another user')" />
-                            <x-select-list name="user_id" id="users" selected="{{ $ticket->user->id }}">
-                                @foreach($users as $user)
-                                    <option value="{{ $user->id }}"  {{ $user->id == $ticket->user->id ? 'selected' : '' }}>
-                                        {{ $user->name }}
-                                    </option>
-                                @endforeach
-                            </x-select-list>
+                        <x-select-list name="user_id" id="users" selected="{{ old('user_id', $ticket->user_id) }}">
+                            @foreach($users as $user)
+                                <option value="{{ $user->id }}" {{ $user->id == old('user_id', $ticket->user_id) ? 'selected' : '' }}>
+                                    {{ $user->name }}
+                                </option>
+                            @endforeach
+                        </x-select-list>
                     </div>
-                @else
-                    <p class="text-white">Status: {{ $ticket->user->name }} </p>
                 @endif
+
 
                 <div class="mt-4" >
 

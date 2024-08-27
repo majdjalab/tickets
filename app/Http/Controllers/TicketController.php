@@ -57,6 +57,9 @@ class TicketController extends Controller
         if ($request->file('attachment')) {
             $this->storeAttachment($request, $ticket);
         }
+        if (auth()->user()->isAdmin && $request->filled('user_id') && $request->input('user_id') != $ticket->user_id) {
+            $ticket->update(['user_id' => $request->input('user_id')]);
+        }
 
         return redirect()->route('ticket.index');
     }
@@ -105,6 +108,10 @@ class TicketController extends Controller
             $this->storeAttachment($request, $ticket);
         }
 
+        if (auth()->user()->isAdmin && $request->filled('user_id') && $request->input('user_id') != $ticket->user_id) {
+            $ticket->update(['user_id' => $request->input('user_id')]);
+        }
+
         $ticket->user->notify(new TicketUpdatedNotification($ticket));
 
         return redirect()->route('ticket.index');
@@ -113,13 +120,17 @@ class TicketController extends Controller
 
     public function destroy(Ticket $ticket)
     {
+        // Delete the attachment if it exists
         if ($ticket->attachment && Storage::disk('public')->exists($ticket->attachment)) {
             Storage::disk('public')->delete($ticket->attachment);
         }
 
+        // Delete the ticket
         $ticket->delete();
+
         return redirect()->route('ticket.index');
     }
+
 
     protected function storeAttachment(Request $request, Ticket $ticket)
     {
