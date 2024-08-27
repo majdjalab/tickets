@@ -89,29 +89,27 @@ class TicketController extends Controller
 
     public function update(UpdateTicketRequest $request, Ticket $ticket)
     {
-        // Optionally log the incoming request data for debugging
-        \Log::info('Update Ticket Request Data:', $request->all());
+        $data = $request->only(['title', 'description', 'due_date', 'status']);
 
-        // Update ticket details with validated request data
-        $ticket->update($request->only('title', 'description', 'due_date', 'status'));
+        $ticket->update($data);
 
-        // Handle file attachment if provided
+        if ($request->filled('categories')) {
+            $categoryIds = explode(',', $request->input('categories'));
+            $ticket->categories()->sync($categoryIds);
+        }
+
         if ($request->file('attachment')) {
-            // Delete existing attachment if it exists
-            if ($ticket->attachment) {
+            if ($ticket->attachment && Storage::disk('public')->exists($ticket->attachment)) {
                 Storage::disk('public')->delete($ticket->attachment);
             }
-
-            // Store the new attachment
             $this->storeAttachment($request, $ticket);
         }
 
-        // Notify the user about the ticket update
         $ticket->user->notify(new TicketUpdatedNotification($ticket));
 
-        // Redirect to the index page
         return redirect()->route('ticket.index');
     }
+
 
     public function destroy(Ticket $ticket)
     {
