@@ -39,11 +39,7 @@
                             <img src="https://cdn-icons-png.flaticon.com/128/1828/1828665.png" class="h-6"/>
                         </button>
                     </template>
-                    <template v-else>
-                        <button @click="editCategory(category)" class="edit-button">
-                            <img src="https://cdn-icons-png.flaticon.com/128/10336/10336582.png" class="h-6"/>
-                        </button>
-                    </template>
+
                 </td>
             </tr>
             </tbody>
@@ -79,28 +75,7 @@ export default {
                 .catch(error => {
                     console.error('Error deleting category:', error);
                 });
-        },
-
-        editCategory(category) {
-            this.editingCategory = {...category};
-            this.editedCategory = {...category};
-        },
-
-        cancelEdit() {
-            this.editingCategory = null;
-            this.editedCategory = {name: '', description: ''};
-        },
-
-        updateCategory(id) {
-            axios.put(`/categories/${id}`, this.editedCategory)
-                .then(response => {
-                    this.$emit('category-updated', response.data);
-                    this.editingCategory = null;
-                    this.editedCategory = {name: '', description: ''};
-                })
-                .catch(error => {
-                    console.error('Error updating category:', error);
-                });
+            location.reload();
         },
     }
 };

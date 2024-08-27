@@ -54,10 +54,12 @@
 
                 <div class="w-full px-4 py-3 bg-white dark:bg-gray-800 shadow-md overflow-hidden rounded-lg">
                     @forelse ($tickets as $ticket)
-                        <div class="text-white flex items-center justify-between py-2" >
-                            <a href="{{ route('ticket.show', $ticket->id) }}" class="flex-1 text-center">{{ $ticket->title }}</a>
+                        <div class="text-white flex items-center justify-between py-2">
+                            <!-- Title -->
+                            <a href="{{ route('ticket.show', $ticket->id) }}" class="flex-1 text-center hover:underline">{{ $ticket->title }}</a>
 
-                            <div class="flex-1 text-center">
+                            <!-- Due Date -->
+                            <a href="{{ route('ticket.show', $ticket->id) }}" class="flex-1 text-center">
                                 @if ($ticket->due_date == now()->format('Y/m/d'))
                                     <p class="text-yellow-600">Due Date: Today</p>
                                 @elseif ($ticket->due_date < now()->format('Y/m/d'))
@@ -65,9 +67,10 @@
                                 @else
                                     <p class="text-green-600">Due Date {{ $ticket->due_date }}</p>
                                 @endif
-                            </div>
+                            </a>
 
-                            <p class="flex-1 text-center">{{ $ticket->created_at->diffForHumans() }}</p>
+                            <!-- Creation Time -->
+                            <a href="{{ route('ticket.show', $ticket->id) }}" class="flex-1 text-center hover:underline">{{ $ticket->created_at->diffForHumans() }}</a>
                         </div>
                     @empty
                         <p class="text-white text-center">You don't have any support tickets yet.</p>
