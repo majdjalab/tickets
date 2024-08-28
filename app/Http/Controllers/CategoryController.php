@@ -59,9 +59,11 @@ class CategoryController extends Controller
     }
 
     // Deletes the specified category from the database
-    public function destroy(Category $category)
+    public function destroy($categoryId)
     {
-        $category->delete();  // Delete the category
+        $category = Category::find($categoryId);
+        $category->delete();
+        // Delete the category
 
         // Redirect back to the index page, but currently the deleted category is incorrectly being passed to the view
         return view('categories.index', compact('category'));

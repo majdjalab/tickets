@@ -60,10 +60,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/tickets/create', [TicketController::class, 'create'])->name('ticket.create');
 
     // Category Routes
-    Route::resource('/categories', CategoryController::class)->except(['create', 'edit']);
-    Route::post('/categories', [CategoryController::class, 'store']);
+    Route::resource('/categories', CategoryController::class)->except(['create']);
+    Route::post('/categories', [CategoryController::class, 'store'])->name('category.store');
     Route::get('/categories/{id}', [CategoryController::class, 'show']);
-    Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
+    Route::delete('/categories/{categoryId}', [CategoryController::class, 'destroy'])->name('categories.destroy');
 
     // Filter Routes
     Route::get('/tickets/filter', [FilterController::class, 'index'])->name('ticket.filter');
