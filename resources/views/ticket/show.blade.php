@@ -39,6 +39,16 @@
                     </form>
                 </div>
 
+                <div class="flex">
+                    <form action="{{ route('ticket.update', $ticket->id) }}" method="post">
+                        @csrf
+                        @method('patch')
+                        <input type="hidden" name="status" value="assigned" />
+                        <x-primary-button>Assign</x-primary-button>
+                    </form>
+                </div>
+
+
                 @if (auth()->user()->isAdmin)
                     <div class="flex">
                         <form action="{{ route('ticket.update', $ticket->id) }}" method="post">

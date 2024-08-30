@@ -15,7 +15,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('ticket_id')->constrained()->onDelete('cascade');
             $table->foreignId('category_id')->constrained()->onDelete('cascade');
-            $table->timestamps();});
+            $table->timestamps();
+            $table->softDeletes();
+        }
+        );
     }
 
 

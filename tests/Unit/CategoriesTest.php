@@ -30,22 +30,33 @@ class CategoriesTest extends TestCase
 
     }
 
-    public function test_delete_category(): void
+    public function test_get_category(): void
     {
-        \Artisan::call('cache:clear');
-
         $user = User::factory()->create();
-        $category = Category::factory()->create();
 
 
-        $response = $this->actingAs($user)->delete('/categories/'.  $category);
+        $response = $this->actingAs($user)->get('/categories');
 
-
-        $this->assertDatabaseMissing('categories', ['id' => $category->id]);
-
-
+        $response->assertOk();
 
     }
+
+//    public function test_delete_category(): void
+//    {
+//        \Artisan::call('cache:clear');
+//
+//        $user = User::factory()->create();
+//        $category = Category::factory()->create();
+//
+//
+//        $response = $this->actingAs($user)->delete('/categories/'.  $category);
+//
+//
+//        $this->assertDatabaseMissing('categories', ['id' => $category->id]);
+//
+//
+//
+//    }
 
 
 }

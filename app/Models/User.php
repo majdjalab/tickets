@@ -10,10 +10,11 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable
 {
-    use  HasFactory, Notifiable;
+    use  HasFactory, Notifiable, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -72,4 +73,18 @@ class User extends Authenticatable
     {
         return $this->hasMany(Ticket::class);
     }
+
+    public function createdTicket( $dateStart, $dateEnd){
+      return $this->tickets()->whereBetween('created_at', [$dateStart, $dateEnd]);
+
+    }
+    public function assignedTicket( $dateStart, $dateEnd){
+        return $this->tickets()->whereBetween('assigned_at', [$dateStart, $dateEnd]);
+
+    }
+    public function updatedTicket( $dateStart, $dateEnd){
+        return $this->tickets()->whereBetween('updated_at', [$dateStart, $dateEnd]);
+
+    }
+
 }
