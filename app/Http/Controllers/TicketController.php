@@ -24,9 +24,11 @@ class TicketController extends Controller
         if ($user->isAdmin) {
             $tickets = Ticket::all();
         }
-        // Otherwise, show only the tickets belonging to the user
+        // If the user is not an admin, show tickets assigned to the user
         else {
-            $tickets = Ticket::where('user_id', $user->id)->get();
+            $tickets = Ticket::where('user_id', $user->id)
+                ->orWhere('assigned_user_id', $user->id) // Assuming the assigned user is stored in this field
+                ->get();
         }
 
         // Return the index view with the tickets, users, and categories
@@ -36,6 +38,7 @@ class TicketController extends Controller
             'categories' => Category::all(),
         ]);
     }
+
 
     // Shows the form to create a new ticket
     public function create()
@@ -78,11 +81,15 @@ class TicketController extends Controller
         // Get the names of the categories associated with the ticket
         $categoryNames = $ticket->categories->pluck('name')->toArray();
 
-        // Return the show view with the ticket details and category names
+        // Get all users to populate the select dropdown for assigning
+        $users = User::all();
+
+        // Return the show view with the ticket details, category names, and users
         return view('ticket.show', [
             'ticket' => $ticket,
             'categories' => Category::all(),
             'categoryNames' => $categoryNames,
+            'users' => $users,  // Pass users to the view
         ]);
     }
 
@@ -97,9 +104,22 @@ class TicketController extends Controller
     // Updates the specified ticket in the database
     public function update(UpdateTicketRequest $request, Ticket $ticket)
     {
-        // Update ticket with the new data from the request
+        \Log::info('Update Request Data:', ['request_data' => $request->all()]);
+
+        // Prepare data to update
         $data = $request->only(['title', 'description', 'due_date', 'status']);
+
+        // If the 'assigned_at' field is present, set it
+        if ($request->filled('assigned_at')) {
+            $data['assigned_at'] = $request->input('assigned_at');
+        }
+
+        \Log::info('Data to be updated:', $data);
+
+        // Update ticket data
         $ticket->update($data);
+
+        \Log::info('Ticket after update:', $ticket->toArray());
 
         // Update ticket categories if provided
         if ($request->filled('categories')) {
@@ -117,17 +137,15 @@ class TicketController extends Controller
             $this->storeAttachment($request, $ticket);
         }
 
-        // If the user is an admin, allow updating the user assigned to the ticket
-        if (auth()->user()->isAdmin && $request->filled('user_id') && $request->input('user_id') != $ticket->user_id) {
-            $ticket->update(['user_id' => $request->input('user_id')]);
-        }
-
         // Notify the ticket owner of the update
         $ticket->user->notify(new TicketUpdatedNotification($ticket));
 
         // Redirect to the ticket index page after updating the ticket
         return redirect()->route('ticket.index');
     }
+
+
+
 
     // Deletes the specified ticket
     public function destroy(Ticket $ticket)

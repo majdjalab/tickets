@@ -59,11 +59,14 @@ class GetTicketsUpdates extends Command
         $dtickets = $dtickets->get();
 
         $updated = $query->whereBetween('updated_at', [$weekAgo, $baseDate])->get();
+        $assigned = $query->whereBetween('assigned_at', [$weekAgo, $baseDate])->get();
 
         $reportText = "Report:";
         $reportText .= "Count of Created: " . count($tickets) . " ";
         $reportText .= "Count of Deleted: " . count($dtickets) . " ";
         $reportText .= "Count of Updated: " . count($updated) . " ";
+        $reportText .= "Count of Assigned: " . count($assigned ) . " ";
+
 
         $this->info($reportText);
 
@@ -91,7 +94,7 @@ class GetTicketsUpdates extends Command
         } else {
             $this->info('Tickets updated in the last week:');
             foreach ($updated as $ticket) {
-                $this->line("ID: {$ticket->id}, By: {$ticket->user->name}, Title: {$ticket->title}, Status: {$ticket->status}, Updated At: {$ticket->updated_at}");
+                $this->line("ID: {$ticket->id}, By: {$ticket->user->name}, Title: {$ticket->title}, Status: {$ticket->status},Assigned At:  {$ticket->assigned_at}, Updated At: {$ticket->updated_at}");
             }
         }
 
@@ -100,7 +103,7 @@ class GetTicketsUpdates extends Command
         } else {
             $this->info('Tickets deleted in the last week:');
             foreach ($dtickets as $ticket) {
-                $this->line("ID: {$ticket->id}, By: {$ticket->user->name}, Title: {$ticket->title}, Status: {$ticket->status}, Deleted At: {$ticket->deleted_at}");
+                $this->line("ID: {$ticket->id}, By: {$ticket->user->name}, Title: {$ticket->title}, Status: {$ticket->status},Assigned At:  {$ticket->assigned_at}, Deleted At: {$ticket->deleted_at}");
             }
         }
 
@@ -109,7 +112,7 @@ class GetTicketsUpdates extends Command
         } else {
             $this->info('Tickets created in the last week:');
             foreach ($tickets as $ticket) {
-                $this->line("ID: {$ticket->id}, By: {$ticket->user->name}, Title: {$ticket->title}, Status: {$ticket->status}, Created At: {$ticket->created_at}");
+                $this->line("ID: {$ticket->id}, By: {$ticket->user->name}, Title: {$ticket->title}, Status: {$ticket->status},Assigned At:  {$ticket->assigned_at}, Created At: {$ticket->created_at}");
             }
 
             $reportData = [

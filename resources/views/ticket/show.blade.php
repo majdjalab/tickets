@@ -39,16 +39,16 @@
                     </form>
                 </div>
 
+                <form action="{{ route('ticket.update', $ticket->id) }}" method="post">
+                    @csrf
+                    @method('patch')
+                    <input type="hidden" name="assigned_at" value="{{ date('Y-m-d') }}" />
+                    <x-primary-button>Assign</x-primary-button>
+                </form>
+
+
                 <div class="flex">
-                    <form action="{{ route('ticket.update', $ticket->id) }}" method="post">
-                        @csrf
-                        @method('patch')
-                        <input type="hidden" name="status" value="assigned" />
-                        <x-primary-button>Assign</x-primary-button>
-                    </form>
-                </div>
-
-
+                    </div>
                 @if (auth()->user()->isAdmin)
                     <div class="flex">
                         <form action="{{ route('ticket.update', $ticket->id) }}" method="post">
