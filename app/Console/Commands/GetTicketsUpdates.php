@@ -122,7 +122,7 @@ class GetTicketsUpdates extends Command
                 'created' => $tickets,
             ];
 
-//           Notification::route('mail', $mailAddress)->notify(new TicketReport($reportData));
+          Notification::route('mail', $mailAddress)->notify(new TicketReport($reportData));
         }
     }
 

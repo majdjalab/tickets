@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class TicketUpdatedNotification extends Notification
+class TicketUpdatedNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -27,8 +27,8 @@ class TicketUpdatedNotification extends Notification
      */
     public function via(object $notifiable): array
     {
-        return $notifiable->is_active ? ['mail'] : [];
-
+        \Log::info('Sending notification to user', ['user' => $notifiable->name, 'is_active' => $notifiable->is_active]);
+        return  ['mail'] ;
     }
 
     /**
